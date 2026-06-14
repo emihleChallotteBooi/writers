@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writers | Subconscious Prints</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="screen-grain" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="Writers home">Writers</a>
+    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#home">Home</a>
+      <a href="#library">Library</a>
+      <a href="#writers">Writers</a>
+      <a href="#fragments">Fragments</a>
+      <a href="#about" data-sound="about">About</a>
+      <button class="theme-toggle" type="button" aria-pressed="false">Dark Mode</button>
+      <button class="sound-toggle" type="button" aria-pressed="false">Sound Off</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero section">
+      <p class="eyebrow">A two-writer literary archive</p>
+      <h1><span>Subconscious</span> Prints</h1>
+      <div class="orange-rule" aria-hidden="true"></div>
+      <p class="hero-copy">Two writers. One quiet archive of thoughts, stories, fragments, and things left unsaid.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#library" data-sound="page">Start Reading</a>
+        <a class="button secondary" href="#writers" data-sound="tick">Meet the Writers</a>
+      </div>
+    </section>
+
+    <section class="section narrow">
+      <div class="section-heading">
+        <p class="eyebrow">Featured pieces</p>
+        <h2>Recently preserved</h2>
+      </div>
+      <div class="archive-window">
+        <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span><em>featured-files</em></div>
+        <div id="featuredPosts" class="post-grid"></div>
+      </div>
+    </section>
+
+    <section id="library" class="section">
+      <div class="section-heading wide-heading">
+        <div>
+          <p class="eyebrow">Library</p>
+          <h2>Browse the archive</h2>
+        </div>
+        <p class="section-note">Filter by writer, form, or mood. The archive is loaded from the Markdown files inside the Challotte and Sister folders.</p>
+      </div>
+
+      <div class="filters" aria-label="Library filters">
+        <label>
+          Writer
+          <select id="authorFilter">
+            <option value="all">All writers</option>
+          </select>
+        </label>
+        <label>
+          Type
+          <select id="typeFilter">
+            <option value="all">All types</option>
+          </select>
+        </label>
+        <label>
+          Mood
+          <select id="moodFilter">
+            <option value="all">All moods</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="archive-window">
+        <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span><em>library-index</em></div>
+        <div id="libraryPosts" class="post-list"></div>
+      </div>
+    </section>
+
+    <section id="writers" class="section warm-panel">
+      <div class="section-heading centered">
+        <p class="eyebrow">Two voices</p>
+        <h2>Meet the writers</h2>
+        <p>Neither voice is secondary. The archive belongs to both.</p>
+      </div>
+      <div class="writer-grid">
+        <article class="writer-card" id="challotte">
+          <span class="writer-initial">C</span>
+          <h3>Challotte</h3>
+          <p>Writes from the space between memory, silence, and becoming. Her work explores identity, emotional inheritance, private thoughts, and the strange tenderness of being human.</p>
+          <p class="tag-line">Themes: Memory · Becoming · Silence</p>
+          <a href="#library" class="text-link" data-author-link="Challotte">Read Challotte</a>
+        </article>
+        <article class="writer-card" id="sister">
+          <span class="writer-initial">S</span>
+          <h3>Sister</h3>
+          <p>Writes through feeling, observation, and the truths people learn to hide at home. Her work holds softness, grief, hope, and the inner weather of ordinary days.</p>
+          <p class="tag-line">Themes: Home · Softness · Hope</p>
+          <a href="#library" class="text-link" data-author-link="Sister">Read Sister</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="fragments" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Fragments</p>
+        <h2>Incomplete thoughts</h2>
+        <p>Small pieces that do not need to become full posts.</p>
+      </div>
+      <div class="archive-window">
+        <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span><em>fragments-cache</em></div>
+        <div id="fragmentGrid" class="fragment-grid"></div>
+      </div>
+    </section>
+
+    <section id="about" class="section narrow about-section">
+      <p class="eyebrow">About the project</p>
+      <h2>A private notebook made public with care.</h2>
+      <p>Subconscious Prints is a two-writer archive for stories, thoughts, fragments, and reflections that come from the places people often keep hidden.</p>
+      <p>It is not built like a public forum or social platform. Readers do not need accounts. Comments, likes, and noisy feeds are intentionally absent. The focus is the writing, the mood, and the quiet act of reading.</p>
+      <p>This first version is static: posts and fragments live as Markdown files inside each writer’s folder. Later, the same structure can connect to a CMS or database without changing the emotional direction of the website.</p>
+    </section>
+  </main>
+
+  <section id="reader" class="reader-view" aria-hidden="true">
+    <div class="reader-shell">
+      <button class="reader-back" type="button" data-close-reader>← Back to archive</button>
+      <p id="readerMeta" class="reader-meta"></p>
+      <h1 id="readerTitle"></h1>
+      <div id="readerBody" class="reader-body"></div>
+      <div id="readerAuthor" class="reader-note"></div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p><strong>Writers</strong></p>
+    <p>Home of Subconscious Prints — a quiet archive of stories, thoughts, and fragments from two voices.</p>
+    <nav aria-label="Footer navigation">
+      <a href="#home">Home</a>
+      <a href="#library">Library</a>
+      <a href="#writers">Writers</a>
+      <a href="#fragments">Fragments</a>
+      <a href="#about" data-sound="about">About</a>
+      <button class="theme-toggle" type="button" aria-pressed="false">Dark Mode</button>
+      <button class="sound-toggle" type="button" aria-pressed="false">Sound Off</button>
+    </nav>
+    <p class="small">© 2026 Writers. All rights reserved.</p>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
