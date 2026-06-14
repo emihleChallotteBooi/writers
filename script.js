@@ -97,15 +97,9 @@ const posts = [
   }
 ];
 
-const fragments = [
-  { text: "I think silence becomes dangerous when everyone in the house agrees to pretend it is peace.", author: "Challotte", mood: "Silence" },
-  { text: "Some memories do not fade. They only change rooms.", author: "Sister", mood: "Memory" },
-  { text: "I am learning that softness can have boundaries.", author: "Sister", mood: "Softness" },
-  { text: "Becoming myself feels like disappointing every version of me that survived by hiding.", author: "Challotte", mood: "Becoming" },
-  { text: "There are days when hope is not bright. It is simply still here.", author: "Sister", mood: "Hope" },
-  { text: "The body remembers what the mouth was not allowed to say.", author: "Challotte", mood: "Unspoken" },
-  { text: "Home is complicated when it taught you both love and fear.", author: "Sister", mood: "Home" },
-  { text: "Not every wound wants revenge. Some only want language.", author: "Challotte", mood: "Grief" }
+const fragmentFiles = [
+  "./challotte/fragments/scars.md",
+  "./sister/fragments/where-the-light-forgot-me.md"
 ];
 
 const authorFilter = document.querySelector("#authorFilter");
@@ -279,17 +273,85 @@ function renderLibrary() {
   filtered.forEach(post => libraryPosts.appendChild(postCard(post)));
 }
 
-function renderFragments() {
-  fragmentGrid.innerHTML = "";
-  fragments.forEach(fragment => {
-    const article = document.createElement("article");
-    article.className = "fragment-card";
-    article.innerHTML = `
-      <blockquote>“${fragment.text}”</blockquote>
-      <footer>${fragment.author} · ${fragment.mood}</footer>
+function parseMarkdownFragment(markdown, filePath) {
+  const frontmatterMatch = markdown.match(/^---\n([\s\S]*?)\n---\n?/);
+  const frontmatter = {};
+  let content = markdown.trim();
+
+  if (frontmatterMatch) {
+    content = markdown.slice(frontmatterMatch[0].length).trim();
+
+    frontmatterMatch[1].split("\n").forEach(line => {
+      const [rawKey, ...rawValue] = line.split(":");
+      if (!rawKey || !rawValue.length) return;
+
+      const key = rawKey.trim();
+      const value = rawValue.join(":").trim();
+
+      if (value.startsWith("[") && value.endsWith("]")) {
+        frontmatter[key] = value
+          .slice(1, -1)
+          .split(",")
+          .map(item => item.trim().replace(/^['"]|['"]$/g, ""))
+          .filter(Boolean);
+      } else {
+        frontmatter[key] = value.replace(/^['"]|['"]$/g, "");
+      }
+    });
+  }
+
+  const cleanContent = content
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/[_*`>]/g, "")
+    .replace(/\n{2,}/g, " ")
+    .trim();
+
+  return {
+    title: frontmatter.title || filePath.split("/").pop().replace(".md", ""),
+    author: frontmatter.author || "Unknown",
+    mood: Array.isArray(frontmatter.mood) ? frontmatter.mood.join(", ") : frontmatter.mood || "Fragment",
+    text: cleanContent
+  };
+}
+
+async function loadFragments() {
+  const loadedFragments = await Promise.all(
+    fragmentFiles.map(async filePath => {
+      const response = await fetch(filePath);
+      if (!response.ok) throw new Error(`Could not load ${filePath}`);
+      const markdown = await response.text();
+      return parseMarkdownFragment(markdown, filePath);
+    })
+  );
+
+  return loadedFragments;
+}
+
+async function renderFragments() {
+  fragmentGrid.innerHTML = `<p class="small">Loading fragments...</p>`;
+
+  try {
+    const fragments = await loadFragments();
+    fragmentGrid.innerHTML = "";
+
+    fragments.forEach(fragment => {
+      const article = document.createElement("article");
+      article.className = "fragment-card";
+      article.innerHTML = `
+        <blockquote>${fragment.text}</blockquote>
+        <footer>${fragment.author} · ${fragment.mood}</footer>
+      `;
+      fragmentGrid.appendChild(article);
+    });
+  } catch (error) {
+    fragmentGrid.innerHTML = `
+      <article class="fragment-card">
+        <blockquote>Fragments could not be loaded. Run the site through a local server instead of opening index.html directly.</blockquote>
+        <footer>Example: python -m http.server 5500</footer>
+      </article>
     `;
-    fragmentGrid.appendChild(article);
-  });
+    console.error(error);
+  }
 }
 
 function openPost(slug) {
