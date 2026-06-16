@@ -422,7 +422,7 @@ select {
   scroll-margin-top: 86px;
 }
 .reader-view[aria-hidden="false"] { display: block; }
-.reader-shell { width: min(640px, 100%); margin-inline: auto; }
+.reader-shell { width: min(720px, 100%); margin-inline: auto; }
 .reader-back {
   margin: 0 0 1.2rem;
   border: 1px solid var(--line);
@@ -490,6 +490,84 @@ select {
 }
 .reader-note:empty { display: none; }
 
+/* Paged reader: applied only inside the expanded Read More view. */
+.reader-page-surface {
+  position: relative;
+  min-height: 34rem;
+  perspective: 1200px;
+}
+.reader-page-surface::before {
+  content: "";
+  position: absolute;
+  inset: -1rem -1.1rem;
+  z-index: -1;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: linear-gradient(90deg, rgba(42, 32, 26, 0.035), transparent 12%, transparent 88%, rgba(42, 32, 26, 0.025));
+  box-shadow: 0 20px 55px rgba(72, 45, 30, 0.055);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.reader-view.is-paginated .reader-page-surface::before { opacity: 1; }
+.reader-view.is-paginated .reader-body {
+  min-height: 32rem;
+  padding: 0.6rem 0 0.2rem;
+  transform-origin: left center;
+  will-change: transform, opacity;
+}
+.reader-page-surface.turn-next .reader-body { animation: pageTurnNext 360ms ease both; }
+.reader-page-surface.turn-prev .reader-body { animation: pageTurnPrev 360ms ease both; }
+.reader-pagination {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 64ch;
+  margin: 1.6rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.reader-pagination[hidden] { display: none; }
+.reader-page-button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.62rem 0.92rem;
+  background: rgba(255, 248, 238, 0.72);
+  color: var(--accent-deep);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.reader-page-button:last-child { justify-self: end; }
+.reader-page-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+.reader-page-status {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+[data-theme="dark"] .reader-page-surface::before {
+  background: linear-gradient(90deg, rgba(255, 248, 238, 0.04), transparent 12%, transparent 88%, rgba(255, 248, 238, 0.025));
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.2);
+}
+[data-theme="dark"] .reader-page-button { background: var(--paper); }
+
+@keyframes pageTurnNext {
+  0% { opacity: 0; transform: translateX(1.3rem) rotateY(-5deg); filter: blur(1px); }
+  100% { opacity: 1; transform: translateX(0) rotateY(0); filter: blur(0); }
+}
+@keyframes pageTurnPrev {
+  0% { opacity: 0; transform: translateX(-1.3rem) rotateY(5deg); filter: blur(1px); }
+  100% { opacity: 1; transform: translateX(0) rotateY(0); filter: blur(0); }
+}
+
 @media (max-width: 1050px) {
   .post-grid, .post-list { grid-template-columns: repeat(2, minmax(240px, 1fr)); }
 }
@@ -523,10 +601,25 @@ select {
 }
 @media (max-width: 560px) {
   .section, .reader-view { padding-inline: 1rem; }
-  .hero h1 { font-size: 4rem; }
+  .reader-view { padding-top: 1.8rem; }
+  .reader-pagination { grid-template-columns: 1fr 1fr; }
+  .reader-page-status { grid-column: 1 / -1; grid-row: 1; text-align: center; }
+  .reader-page-button { grid-row: 2; min-height: 2.85rem; }
+  .reader-page-button:last-child { justify-self: stretch; }
+  .reader-page-button:first-child { justify-self: stretch; }
+  .reader-page-surface { min-height: 24rem; }
+  .reader-page-surface::before { inset: -0.7rem -0.55rem; border-radius: 0.85rem; }
+  .reader-view.is-paginated .reader-body { min-height: 22rem; }
+  .hero h1 { font-size: 3.45rem; }
   .post-card, .fragment-card, .writer-card { min-height: auto; }
-  .reader-shell h1 { font-size: 2rem; }
-  .reader-body { font-size: 0.98rem; }
+  .writer-profile .author-portrait { max-height: 360px; }
+  .reader-shell h1 { font-size: 1.85rem; }
+  .reader-meta { font-size: 0.72rem; }
+  .reader-body { font-size: 0.94rem; line-height: 1.68; }
+  .reader-body h3, .reading-subtitle, .book-chapter-title {
+    margin-top: 1.35rem;
+    font-size: 1.35rem;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }

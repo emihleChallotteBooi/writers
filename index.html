@@ -129,7 +129,14 @@
       <button class="reader-back" type="button" data-close-reader>← Back</button>
       <p id="readerMeta" class="reader-meta"></p>
       <h1 id="readerTitle"></h1>
-      <div id="readerBody" class="reader-body"></div>
+      <div id="readerPageSurface" class="reader-page-surface">
+        <div id="readerBody" class="reader-body"></div>
+      </div>
+      <nav id="readerPagination" class="reader-pagination" aria-label="Reading pages" hidden>
+        <button class="reader-page-button" type="button" data-reader-prev>← Previous</button>
+        <span id="readerPageStatus" class="reader-page-status">Page 1 of 1</span>
+        <button class="reader-page-button" type="button" data-reader-next>Next →</button>
+      </nav>
       <div id="readerAuthor" class="reader-note"></div>
     </div>
   </section>
