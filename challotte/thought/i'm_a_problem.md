@@ -2,7 +2,7 @@
 title: "I'm a problem"
 author: "Challotte"
 type: "thought"
-mood: ["Ragw", "Love"]
+mood: ["Rage", "Love"]
 date: "2026-04-27"
 readTime: "1 min read"
 ---
