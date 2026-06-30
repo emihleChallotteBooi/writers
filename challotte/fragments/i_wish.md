@@ -48,13 +48,14 @@ We go to the Freshers party; we are dressed and look all cute. Pixie is also the
 
 I think I was only doing so in my head, but who knows, I might have said one or two out loud. 
 I'm thinking to myself:
-1.She claims that her guru told her that she is having insomnia and struggling to focus on her schoolwork and perform her best because someone is after her intellectual property.
-2.The person is intensely after her and her life's prospects.
-3.The same person has been using a technique called "knowledge swapping," and she has been practicing the aforementioned method for years, and that is how they got through prior stages of their life.
-4.The person does not belong at Wits; they lack the cognitive functioning that a Wits candidate needs to get through. The person is not smart or intellectually gifted at all; they are just a fraud who gets by by preying on individuals such as her.
-5.She tells Starborn to be extremely cautious around my presence because I am this entity that is assigned by dark powers to perform these dark assignments on her, and therefore Starborn should be vigilant because I am extremely dangerous and witchy.
-6.She says because I sometimes watch Shera Seven, the "sprinkle sprinkle" lady, I perform dark magic.
-7.She claims now I am after her whole family, and they all cannot live in harmony and peace and be prosperous on earth because I want harm their way.
+
+1. She claims that her guru told her that she is having insomnia and struggling to focus on her schoolwork and perform her best  because someone is after her intellectual property.
+2. The person is intensely after her and her life's prospects.
+3. The same person has been using a technique called "knowledge swapping," and she has been practicing the aforementioned method for years, and that is how they got through prior stages of their life.
+4. The person does not belong at Wits; they lack the cognitive functioning that a Wits candidate needs to get through. The person is not smart or intellectually gifted at all; they are just a fraud who gets by by preying on individuals such as her.
+5. She tells Starborn to be extremely cautious around my presence because I am this entity that is assigned by dark powers to perform these dark assignments on her, and therefore Starborn should be vigilant because I am extremely dangerous and witchy.
+6. She says because I sometimes watch Shera Seven, the "sprinkle sprinkle" lady, I perform dark magic.
+7. She claims now I am after her whole family, and they all cannot live in harmony and peace and be prosperous on earth because I want harm their way.
 
 I go on and on in my head. At this point, I myself am extremely puzzled. Shera Seven talks about a gold-digging lifestyle, so what does that have to do with all this nonsense? If I was able to perform knowledge swapping, wouldn't I just utilize that power by swapping knowledge at the bank and getting richer? I'm perplexed. If I was so powerful as she claims, why would I waste my power on lower forms like that instead of doing worthwhile things, becoming more blessed financially, and having absolutely no need for a degree? If I possessed such power, I wouldn't be using it to swap useless university knowledge I can get on a YouTube video; I would do next-level stuff. 
 I realized that I am getting more pissed by each and every one of these allegations because they have no stance whatsoever. She wants to tell me about not belonging at Wits? Missy, I turned down UCT, remember? I got into UCT and you did not. Who did I switch my knowledge with in high school then? Oh no, what about primary school? You go to my mountain collection of awards, medals, and certificates that date back from kindergarten, and you want to say I switched knowledge with a kindergarten kid on how to do my ABCs? 
