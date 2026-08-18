@@ -12,10 +12,20 @@ function bindEvents() {
     const soundTrigger = event.target.closest("[data-sound]");
     const previousPageButton = event.target.closest("[data-reader-prev]");
     const nextPageButton = event.target.closest("[data-reader-next]");
+    const shareButton = event.target.closest("[data-share-reader]");
+    const closeShareButton = event.target.closest("[data-close-share]");
+    const nativeShareButton = event.target.closest("[data-share-native]");
+    const downloadShareButton = event.target.closest("[data-share-download]");
+    const copyShareButton = event.target.closest("[data-share-copy]");
 
     if (soundTrigger) playPaperSound();
     if (previousPageButton) turnReaderPage(-1);
     if (nextPageButton) turnReaderPage(1);
+    if (shareButton) openShareDialog();
+    if (closeShareButton) closeShareDialog();
+    if (nativeShareButton) sharePreview();
+    if (downloadShareButton) downloadSharePreview();
+    if (copyShareButton) copyShareLink();
     if (readButton) openPost(readButton.dataset.slug);
     if (fragmentButton) openFragment(fragmentButton.dataset.fragmentSlug);
     if (closeButton) closeReader();
@@ -33,6 +43,7 @@ function bindEvents() {
       if (event.key === "ArrowLeft") turnReaderPage(-1);
     }
     if (event.key === "Escape") closeReader();
+    if (event.key === "Escape") closeShareDialog();
   });
 
   $$(".theme-toggle").forEach(toggle => {

@@ -139,7 +139,90 @@ function turnReaderPage(direction) {
   reader.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function openReader({ title, meta, type, html, note }) {
+let currentShareData = null;
+
+function openShareDialog() {
+  if (!currentShareData) return;
+  const dialog = $("#shareDialog");
+  const preview = $("#sharePreview");
+  const canvas = document.createElement("canvas");
+  canvas.width = 540;
+  canvas.height = 960;
+  const context = canvas.getContext("2d");
+  const styles = getComputedStyle(document.documentElement);
+  const dark = document.documentElement.dataset.theme === "dark";
+  const paper = styles.getPropertyValue(dark ? "--paper" : "--paper-strong").trim();
+  const ink = styles.getPropertyValue("--ink").trim();
+  const heading = styles.getPropertyValue("--heading").trim();
+  const muted = styles.getPropertyValue("--muted").trim();
+  const accent = styles.getPropertyValue("--accent").trim();
+  context.fillStyle = paper;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = accent;
+  context.fillRect(44, 62, 452, 2);
+  context.fillStyle = muted;
+  context.font = "700 14px Inter, sans-serif";
+  context.fillText("SUBCONSCIOUS PRINTS", 44, 96);
+  context.fillStyle = heading;
+  context.font = "600 39px Cormorant Garamond, Georgia, serif";
+  context.fillText(currentShareData.title, 44, 285, 450);
+  context.fillStyle = ink;
+  context.font = "400 19px Libre Baskerville, Georgia, serif";
+  context.fillText(currentShareData.excerpt || "A piece waiting to be read.", 44, 430, 440);
+  context.fillStyle = muted;
+  context.font = "700 14px Inter, sans-serif";
+  context.fillText(`BY ${String(currentShareData.author).toUpperCase()}`, 44, 760);
+  context.font = "400 13px Inter, sans-serif";
+  context.fillText("Read the full piece at Writers", 44, 825);
+  preview.innerHTML = "";
+  preview.appendChild(canvas);
+  dialog.setAttribute("aria-hidden", "false");
+  dialog.classList.add("is-open");
+}
+
+function closeShareDialog() {
+  const dialog = $("#shareDialog");
+  dialog.setAttribute("aria-hidden", "true");
+  dialog.classList.remove("is-open");
+}
+
+function shareLink() {
+  const url = new URL(window.location.href);
+  url.hash = `piece/${encodeURIComponent(currentShareData.slug)}`;
+  return url.href;
+}
+
+function downloadSharePreview() {
+  const canvas = $("#sharePreview canvas");
+  if (!canvas || !currentShareData) return;
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = `${currentShareData.slug}-preview.png`;
+  link.click();
+}
+
+async function copyShareLink() {
+  if (!currentShareData) return;
+  await navigator.clipboard.writeText(shareLink());
+  $("#shareStatus").textContent = "Reading link copied.";
+}
+
+async function sharePreview() {
+  if (!currentShareData) return;
+  const canvas = $("#sharePreview canvas");
+  if (!canvas) return;
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+  const file = new File([blob], `${currentShareData.slug}-preview.png`, { type: "image/png" });
+  if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+    await navigator.share({ title: currentShareData.title, text: `Read “${currentShareData.title}” by ${currentShareData.author}`, url: shareLink(), files: [file] }).catch(() => {});
+    return;
+  }
+  downloadSharePreview();
+  await copyShareLink();
+  $("#shareStatus").textContent = "The image was downloaded and the reading link was copied.";
+}
+
+function openReader({ title, meta, type, html, note, share }) {
   playPaperSound();
   const pages = buildReaderPages(html, type);
   readerPageState = { pages, current: 0, type, paginated: pages.length > 1 };
@@ -147,6 +230,8 @@ function openReader({ title, meta, type, html, note }) {
   readerTitle.textContent = title;
   readerMeta.textContent = meta;
   readerAuthor.innerHTML = note || "";
+  currentShareData = share || null;
+  $("[data-share-reader]").hidden = !currentShareData;
   reader.setAttribute("aria-hidden", "false");
   renderReaderPage("next");
   reader.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -160,7 +245,8 @@ function openPost(slug) {
     meta: `${post.author} · ${post.type} · ${post.readTime}`,
     type: post.type,
     html: post.html,
-    note: `<p>Written by ${escapeHtml(post.author)}.</p>`
+    note: `<p>Written by ${escapeHtml(post.author)}.</p>`,
+    share: { title: post.title, author: post.author, excerpt: post.excerpt, slug: post.slug }
   });
 }
 
@@ -172,7 +258,8 @@ function openFragment(slug) {
     meta: `${fragment.author} · ${fragment.type} · ${fragment.readTime}`,
     type: fragment.type,
     html: fragment.html,
-    note: `<p>Written by ${escapeHtml(fragment.author)}.</p>`
+    note: `<p>Written by ${escapeHtml(fragment.author)}.</p>`,
+    share: { title: fragment.title, author: fragment.author, excerpt: fragment.excerpt || fragment.preview, slug: fragment.slug }
   });
 }
 
@@ -188,6 +275,8 @@ function closeReader(play = true) {
   readerPageStatus.textContent = "Page 1 of 1";
   readerPageState = { pages: [], current: 0, type: "piece", paginated: false };
   readerAuthor.innerHTML = "";
+  $("[data-share-reader]").hidden = true;
+  currentShareData = null;
   const target = lastRouteTarget === "writerProfile" ? writerProfile : $("#library");
   if (play && target) target.scrollIntoView({ behavior: "smooth", block: "start" });
 }

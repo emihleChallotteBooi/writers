@@ -293,6 +293,14 @@ body, .site-header, .post-card, .fragment-card, .writer-card, .reader-view, .fil
 }
 .post-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .writer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#featuredPosts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem;
+}
+#featuredPosts .post-card {
+  min-height: 330px;
+  padding: 1.45rem;
+}
 
 .post-card, .fragment-card, .writer-card, .empty-state {
   position: relative;
@@ -624,7 +632,7 @@ select {
   font-size: 1.5rem;
 }
 .share-preview { display: flex; justify-content: center; }
-.share-preview img { width: min(100%, 17rem); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.share-preview img, .share-preview canvas { width: min(100%, 17rem); border: 1px solid var(--line); box-shadow: var(--shadow); }
 .share-status { min-height: 1.4em; margin: 0.8rem 0; color: var(--muted); font-size: 0.82rem; text-align: center; }
 .share-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
 .share-actions .button { cursor: pointer; }
@@ -1213,6 +1221,7 @@ legend {
 
 @media (max-width: 860px) {
   .wide-heading, .filters, .post-grid, .post-list, .writer-grid, .fragment-grid, .writer-profile-header { grid-template-columns: 1fr; }
+  #featuredPosts { grid-template-columns: 1fr; }
   .nav-toggle {
     display: inline-flex;
     border: 1px solid var(--line);
