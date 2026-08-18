@@ -31,6 +31,28 @@ async function loadArchive() {
       console.warn("Server load failed, falling back to IndexedDB cache:", serverError);
     }
 
+    // Static hosting fallback: Netlify and similar hosts do not run Express.
+    try {
+      const response = await fetch(STATIC_ARCHIVE_ENDPOINT, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Static archive returned ${response.status}`);
+
+      const staticArchive = await response.json();
+      if (!Array.isArray(staticArchive)) throw new Error("Invalid static archive payload");
+
+      const loadedPosts = staticArchive
+        .filter(item => item && typeof item.filePath === "string" && typeof item.markdown === "string")
+        .map(item => parseMarkdownFragment(item.markdown, item.filePath));
+
+      for (const post of loadedPosts) {
+        await archiveStorage.savePiece(post);
+      }
+
+      console.log(`Loaded ${loadedPosts.length} pieces from static archive`);
+      return loadedPosts.sort((a, b) => safeDateValue(b.date) - safeDateValue(a.date));
+    } catch (staticError) {
+      console.warn("Static archive load failed, falling back to IndexedDB cache:", staticError);
+    }
+
     // Fallback source: cached local pieces
     const storedCount = await archiveStorage.getPieceCount();
     if (storedCount > 0) {
