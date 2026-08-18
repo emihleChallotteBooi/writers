@@ -119,6 +119,41 @@ body, .site-header, .post-card, .fragment-card, .writer-card, .reader-view, .fil
 }
 .site-nav a:hover, .site-footer a:hover, .text-link:hover { color: var(--accent-deep); }
 .nav-toggle { display: none; }
+.explore-menu { position: relative; }
+.explore-menu summary {
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+}
+.explore-menu summary::-webkit-details-marker { display: none; }
+.explore-menu summary::after { content: " ↓"; color: var(--accent); font-size: 0.8em; }
+.explore-menu[open] summary, .explore-menu summary:hover { color: var(--accent-deep); }
+.explore-menu-links {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: -0.8rem;
+  z-index: 90;
+  display: grid;
+  min-width: 11rem;
+  padding: 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: var(--paper-strong);
+  box-shadow: var(--shadow);
+}
+.explore-menu-links a { padding: 0.5rem 0.7rem; }
+.explore-menu-close {
+  display: block;
+  margin: 0 0 0.2rem auto;
+  border: 0;
+  padding: 0.1rem 0.35rem;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.explore-menu-close:hover { color: var(--accent-deep); }
 
 .sound-toggle, .theme-toggle {
   border: 1px solid var(--line);
@@ -151,6 +186,28 @@ body, .site-header, .post-card, .fragment-card, .writer-card, .reader-view, .fil
 [data-theme="dark"] .theme-toggle.is-on { color: #171210; }
 
 .section { padding: clamp(4rem, 7vw, 7rem) clamp(1.25rem, 5vw, 5.5rem); }
+.archive-entry { border-top: 1px solid var(--line); }
+.archive-paths { display: grid; border-top: 1px solid var(--line); }
+.archive-path {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 0.2rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  transition: padding 180ms ease, color 180ms ease;
+}
+.archive-path:hover { padding-inline: 0.8rem; color: var(--accent-deep); }
+.archive-path-number, .archive-path-arrow {
+  color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.78rem;
+}
+.archive-path strong { display: block; font-family: var(--serif); font-size: 1.5rem; }
+.archive-path small { display: block; color: var(--muted); font-size: 0.85rem; }
+.archive-path-arrow { font-size: 1.2rem; }
 .narrow { width: min(940px, 100%); margin-inline: auto; }
 .hero {
   min-height: 82vh;
@@ -1102,6 +1159,13 @@ legend {
     box-shadow: var(--shadow);
   }
   .site-nav.open { display: flex; }
+  .explore-menu { width: 100%; }
+  .explore-menu-links {
+    position: static;
+    min-width: 0;
+    margin-top: 0.4rem;
+    box-shadow: none;
+  }
   .hero { min-height: 74vh; }
   .writer-works-heading { display: block; }
 }

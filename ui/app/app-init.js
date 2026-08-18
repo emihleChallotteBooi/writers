@@ -55,6 +55,11 @@ function bindEvents() {
     playSoftTick();
   });
   nav.addEventListener("click", event => {
+    const exploreClose = event.target.closest(".explore-menu-close");
+    if (exploreClose) {
+      exploreClose.closest(".explore-menu").removeAttribute("open");
+      return;
+    }
     if (event.target.tagName === "A") {
       nav.classList.remove("open");
       navToggle.setAttribute("aria-expanded", "false");

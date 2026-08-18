@@ -30,7 +30,11 @@ function postCard(post, compact = false) {
 
 function renderFeatured() {
   featuredPosts.innerHTML = "";
-  const recentlyPreserved = [...posts].sort((a, b) => safeDateValue(b.date) - safeDateValue(a.date)).slice(0, 3);
+  const recentlyPreserved = Object.values(authors)
+    .map(author => [...posts]
+      .filter(post => post.author === author.name)
+      .sort((a, b) => safeDateValue(b.date) - safeDateValue(a.date))[0])
+    .filter(Boolean);
   if (!recentlyPreserved.length) {
     featuredPosts.innerHTML = `<article class="empty-state">Nothing has been preserved here yet.</article>`;
     return;
@@ -132,7 +136,7 @@ function renderWriterProfile(authorKey) {
 
 function showAllCoreSections() {
   $$(".page-section").forEach(section => {
-    section.hidden = false;
+    section.hidden = section.id === "library";
   });
   writerProfile.hidden = true;
   notFound.hidden = true;
@@ -141,6 +145,14 @@ function showAllCoreSections() {
 function route() {
   const hash = window.location.hash || "#home";
   closeReader(false);
+  if (hash === "#library") {
+    $$(".page-section").forEach(section => { section.hidden = section.id !== "library"; });
+    libraryPosts.scrollIntoView({ behavior: "smooth", block: "start" });
+    writerProfile.hidden = true;
+    notFound.hidden = true;
+    lastRouteTarget = "library";
+    return;
+  }
   if (hash.startsWith("#writer/")) {
     const key = hash.replace("#writer/", "").trim();
     $$(".page-section").forEach(section => { section.hidden = true; });
