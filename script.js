@@ -86,6 +86,13 @@ const readerPageSurface = $("#readerPageSurface");
 const readerPagination = $("#readerPagination");
 const readerPageStatus = $("#readerPageStatus");
 const readerAuthor = $("#readerAuthor");
+const readerShareButton = $("[data-share-reader]");
+const shareDialog = $("#shareDialog");
+const sharePreview = $("#sharePreview");
+const shareStatus = $("#shareStatus");
+let shareData = null;
+let shareBlob = null;
+let shareObjectUrl = null;
 
 function escapeHtml(value = "") {
   return String(value)
@@ -429,7 +436,7 @@ function renderWriterProfile(authorKey) {
     </div>
     <div class="post-list writer-work-list" id="writerWorkList"></div>
   `;
-  
+
   const uploadButton = document.getElementById("uploadAuthorPosts");
 
 if (uploadButton) {
@@ -457,6 +464,16 @@ function showAllCoreSections() {
 function route() {
   const hash = window.location.hash || "#home";
   closeReader(false);
+  if (hash.startsWith("#piece/")) {
+    const slug = decodeURIComponent(hash.replace("#piece/", "").trim());
+    const post = posts.find(item => item.slug === slug);
+    if (post) {
+      showAllCoreSections();
+      lastRouteTarget = "library";
+      openPost(slug);
+      return;
+    }
+  }
   if (hash.startsWith("#writer/")) {
     const key = hash.replace("#writer/", "").trim();
     $$(".page-section").forEach(section => { section.hidden = true; });
@@ -626,7 +643,7 @@ function turnReaderPage(direction) {
   reader.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function openReader({ title, meta, type, html, note }) {
+function openReader({ title, meta, type, html, note, share }) {
   playPaperSound();
   const pages = buildReaderPages(html, type);
   readerPageState = { pages, current: 0, type, paginated: pages.length > 1 };
@@ -634,6 +651,8 @@ function openReader({ title, meta, type, html, note }) {
   readerTitle.textContent = title;
   readerMeta.textContent = meta;
   readerAuthor.innerHTML = note || "";
+  shareData = share;
+  readerShareButton.hidden = !shareData;
   reader.setAttribute("aria-hidden", "false");
   renderReaderPage("next");
   reader.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -647,7 +666,8 @@ function openPost(slug) {
     meta: `${post.author} · ${post.type} · ${post.readTime}`,
     type: post.type,
     html: post.html,
-    note: `<p>Written by ${escapeHtml(post.author)}.</p>`
+    note: `<p>Written by ${escapeHtml(post.author)}.</p>`,
+    share: { title: post.title, author: post.author, excerpt: post.excerpt, slug: post.slug }
   });
 }
 
@@ -659,7 +679,8 @@ function openFragment(slug) {
     meta: `${fragment.author} · ${fragment.type} · ${fragment.readTime}`,
     type: fragment.type,
     html: fragment.html,
-    note: `<p>Written by ${escapeHtml(fragment.author)}.</p>`
+    note: `<p>Written by ${escapeHtml(fragment.author)}.</p>`,
+    share: { title: fragment.title, author: fragment.author, excerpt: fragment.excerpt || fragment.preview, slug: fragment.slug }
   });
 }
 
@@ -675,8 +696,138 @@ function closeReader(play = true) {
   readerPageStatus.textContent = "Page 1 of 1";
   readerPageState = { pages: [], current: 0, type: "piece", paginated: false };
   readerAuthor.innerHTML = "";
+  readerShareButton.hidden = true;
+  shareData = null;
   const target = lastRouteTarget === "writerProfile" ? writerProfile : $("#library");
   if (play && target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function wrapCanvasText(context, text, maxWidth) {
+  const words = String(text || "").split(/\s+/);
+  const lines = [];
+  let line = "";
+  words.forEach(word => {
+    const candidate = line ? `${line} ${word}` : word;
+    if (line && context.measureText(candidate).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+
+async function createShareCard(data) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const context = canvas.getContext("2d");
+  const styles = getComputedStyle(document.documentElement);
+  const dark = currentTheme === "dark";
+  const paper = styles.getPropertyValue(dark ? "--paper" : "--paper-strong").trim();
+  const ink = styles.getPropertyValue("--ink").trim();
+  const heading = styles.getPropertyValue("--heading").trim();
+  const muted = styles.getPropertyValue("--muted").trim();
+  const accent = styles.getPropertyValue("--accent").trim();
+
+  context.fillStyle = paper;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = accent;
+  context.fillRect(88, 124, 904, 4);
+  context.fillStyle = muted;
+  context.font = "700 28px Inter, sans-serif";
+  context.fillText("SUBCONSCIOUS PRINTS", 88, 190);
+
+  context.fillStyle = heading;
+  context.font = "600 78px Cormorant Garamond, Georgia, serif";
+  const titleLines = wrapCanvasText(context, data.title, 820).slice(0, 3);
+  titleLines.forEach((line, index) => context.fillText(line, 88, 570 + index * 86));
+
+  context.fillStyle = accent;
+  context.fillRect(88, 850, 120, 3);
+  context.fillStyle = ink;
+  context.font = "400 38px Libre Baskerville, Georgia, serif";
+  const excerptLines = wrapCanvasText(context, data.excerpt || "A piece waiting to be read.", 820).slice(0, 6);
+  excerptLines.forEach((line, index) => context.fillText(line, 88, 960 + index * 58));
+
+  context.fillStyle = muted;
+  context.font = "700 28px Inter, sans-serif";
+  context.fillText(`BY ${String(data.author).toUpperCase()}`, 88, 1510);
+  context.font = "400 26px Inter, sans-serif";
+  context.fillText("Read the full piece at Writers", 88, 1650);
+  context.fillStyle = accent;
+  context.fillRect(88, 1730, 904, 2);
+  context.fillStyle = muted;
+  context.font = "400 24px Inter, sans-serif";
+  context.fillText("writers", 88, 1790);
+
+  return new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+}
+
+async function openShareDialog() {
+  if (!shareData) return;
+  shareStatus.textContent = "Preparing a reading card…";
+  shareDialog.setAttribute("aria-hidden", "false");
+  shareDialog.classList.add("is-open");
+  shareBlob = await createShareCard(shareData);
+  if (!shareBlob) {
+    shareStatus.textContent = "This preview could not be prepared.";
+    return;
+  }
+  if (shareObjectUrl) URL.revokeObjectURL(shareObjectUrl);
+  shareObjectUrl = URL.createObjectURL(shareBlob);
+  sharePreview.innerHTML = `<img src="${shareObjectUrl}" alt="Preview card for ${escapeHtml(shareData.title)}">`;
+  shareStatus.textContent = "A short preview, with the full piece waiting on Writers.";
+}
+
+function closeShareDialog() {
+  shareDialog.setAttribute("aria-hidden", "true");
+  shareDialog.classList.remove("is-open");
+}
+
+function getShareUrl() {
+  const url = new URL(window.location.href);
+  url.hash = `piece/${encodeURIComponent(shareData.slug)}`;
+  return url.href;
+}
+
+async function sharePreviewCard() {
+  if (!shareBlob || !shareData) return;
+  const file = new File([shareBlob], `${shareData.slug}-preview.png`, { type: "image/png" });
+  const sharePayload = { title: shareData.title, text: `Read “${shareData.title}” by ${shareData.author}`, url: getShareUrl(), files: [file] };
+  if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+    await navigator.share(sharePayload).catch(() => {});
+    return;
+  }
+  downloadShareCard();
+  await copyShareLink();
+  shareStatus.textContent = "The image was downloaded and the reading link was copied.";
+}
+
+function downloadShareCard() {
+  if (!shareObjectUrl || !shareData) return;
+  const link = document.createElement("a");
+  link.href = shareObjectUrl;
+  link.download = `${shareData.slug}-preview.png`;
+  link.click();
+  shareStatus.textContent = "Preview image downloaded.";
+}
+
+async function copyShareLink() {
+  const url = getShareUrl();
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (error) {
+    const input = document.createElement("input");
+    input.value = url;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    input.remove();
+  }
+  shareStatus.textContent = "Reading link copied.";
 }
 
 // Audio and sound functions
@@ -812,10 +963,20 @@ function bindEvents() {
     const soundTrigger = event.target.closest("[data-sound]");
     const previousPageButton = event.target.closest("[data-reader-prev]");
     const nextPageButton = event.target.closest("[data-reader-next]");
+    const shareButton = event.target.closest("[data-share-reader]");
+    const closeShareButton = event.target.closest("[data-close-share]");
+    const nativeShareButton = event.target.closest("[data-share-native]");
+    const downloadShareButton = event.target.closest("[data-share-download]");
+    const copyShareButton = event.target.closest("[data-share-copy]");
 
     if (soundTrigger) playPaperSound();
     if (previousPageButton) turnReaderPage(-1);
     if (nextPageButton) turnReaderPage(1);
+    if (shareButton) openShareDialog();
+    if (closeShareButton) closeShareDialog();
+    if (nativeShareButton) sharePreviewCard();
+    if (downloadShareButton) downloadShareCard();
+    if (copyShareButton) copyShareLink();
     if (readButton) openPost(readButton.dataset.slug);
     if (fragmentButton) openFragment(fragmentButton.dataset.fragmentSlug);
     if (closeButton) closeReader();
@@ -833,6 +994,7 @@ function bindEvents() {
       if (event.key === "ArrowLeft") turnReaderPage(-1);
     }
     if (event.key === "Escape") closeReader();
+    if (event.key === "Escape") closeShareDialog();
   });
 
   $$(".theme-toggle").forEach(toggle => {
