@@ -1,4 +1,5 @@
 const SERVER_ARCHIVE_ENDPOINT = "/api/archive";
+const STATIC_ARCHIVE_ENDPOINT = "./archive.json";
 
 const authors = {
   Challotte: {
