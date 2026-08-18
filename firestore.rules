@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// Security rules for the Writers / Subconscious Prints "pieces" collection.
+//
+// This repo has no server-side write endpoint and no Firebase Authentication
+// wired up — the admin panel's passphrase gate (see ui/admin/admin-panel.js)
+// only hides the UI in the browser. It does NOT stop someone from calling
+// the Firestore SDK directly with your firebaseConfig (which is public by
+// necessity in client-side code). The rules below are the actual security
+// boundary for your data and must be deployed in the Firebase console
+// (Firestore Database > Rules) or via `firebase deploy --only firestore:rules`.
+//
+// As written: anyone can READ pieces (needed for the public archive to
+// load), but nobody can WRITE without signing in via Firebase Authentication.
+// This repo does not yet set up Firebase Auth, so until you add it, writes
+// from cloud-sync.js will fail closed (safe default) rather than open.
+//
+// To actually enable writes again:
+//   1. Enable an Auth provider in the Firebase console (Email/Password is
+//      simplest for a two-person site).
+//   2. Create one account per writer.
+//   3. Add firebase.auth().signInWithEmailAndPassword(...) to cloud-sync.js
+//      (or a dedicated login step) before any write call.
+//   4. Optionally restrict further below to specific emails.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /pieces/{pieceId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+      // Tighter option once Auth is set up — only these accounts can write:
+      // allow write: if request.auth != null &&
+      //   request.auth.token.email in ['you@example.com', 'sister@example.com'];
+    }
+  }
+}

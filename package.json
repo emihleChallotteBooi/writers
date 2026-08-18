@@ -1,5 +1,11 @@
 {
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "build": "node scripts/generate-archive.js"
+  },
   "dependencies": {
+    "express": "^4.21.2",
     "firebase": "^12.15.0"
   }
 }

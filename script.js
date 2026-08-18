@@ -1,3 +1,7 @@
+import { uploadAuthorPosts } from "./add_work.js";
+
+
+
 const archiveFiles = [
   "./challotte/poems/scars.md",
   "./challotte/poems/falseLove.md",
@@ -399,6 +403,7 @@ function renderFragments() {
 }
 
 function renderWriterProfile(authorKey) {
+
   const author = Object.values(authors).find(item => item.key === authorKey);
   if (!author) return false;
 
@@ -413,6 +418,11 @@ function renderWriterProfile(authorKey) {
         <p>${author.intro}</p>
         <p class="tag-line">${author.themes.join(" · ")}</p>
       </div>
+      <div>
+        <button id="uploadAuthorPosts">
+       Upload ${author.name}'s Work
+        </button>
+      </div>
     </div>
     <div class="writer-works-heading">
       <div>
@@ -426,6 +436,14 @@ function renderWriterProfile(authorKey) {
     </div>
     <div class="post-list writer-work-list" id="writerWorkList"></div>
   `;
+
+  const uploadButton = document.getElementById("uploadAuthorPosts");
+
+if (uploadButton) {
+    uploadButton.addEventListener("click", () => {
+        uploadAuthorPosts(author.key);
+    });
+}
   const list = $("#writerWorkList");
   if (!writerPosts.length) {
     list.innerHTML = `<article class="empty-state">Nothing preserved here yet. This part of ${author.name}'s archive is still waiting.</article>`;
@@ -483,7 +501,7 @@ function route() {
   }
 }
 
-
+// Pagination and reader functions
 function isPaginatedType(type = "") {
   const normalizedType = String(type).toLowerCase();
   return ["book", "story", "essay", "reflection", "letter"].some(name => normalizedType.includes(name));
@@ -812,6 +830,7 @@ async function copyShareLink() {
   shareStatus.textContent = "Reading link copied.";
 }
 
+// Audio and sound functions
 function getAudioContext() {
   if (!audioContext) {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;

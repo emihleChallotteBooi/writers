@@ -14,13 +14,13 @@ The site is built to feel like a quiet, formal, two-author archive rather than a
 Because the archive loads Markdown files with `fetch`, open the site through a local server:
 
 ```bash
-python -m http.server 5500
+npm start
 ```
 
 Then open:
 
 ```text
-http://localhost:5500
+http://localhost:5500/
 ```
 
 ## Main features
@@ -32,7 +32,7 @@ http://localhost:5500
 - Dedicated writer rooms:
   - `#writer/challotte`
   - `#writer/sister`
-- Author portraits stored in `assets/authors/` for easy replacement.
+- Author portraits stored in `ui/assets/authors/` for easy replacement.
 - Formal About section.
 - Custom empty states and unpreserved-page state.
 - Clean full-page reader with author/date/type/read-time metadata.
@@ -43,8 +43,8 @@ http://localhost:5500
 Replace these files and keep the same filenames:
 
 ```text
-assets/authors/challotte.jpg
-assets/authors/sister.jpg
+ui/assets/authors/challotte.jpg
+ui/assets/authors/sister.jpg
 ```
 
 No code changes are needed if the filenames stay the same.
