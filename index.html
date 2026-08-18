@@ -53,6 +53,31 @@
       <div id="featuredPosts" class="post-grid"></div>
     </section>
 
+    <section class="section archive-entry page-section">
+      <div class="section-heading">
+        <p class="eyebrow">A way into the archive</p>
+        <h2>Choose a room.</h2>
+        <p>Read by collection, by voice, or by the unfinished pieces that live between both.</p>
+      </div>
+      <nav class="archive-paths" aria-label="Ways to explore the archive">
+        <a class="archive-path" href="#library">
+          <span class="archive-path-number">01</span>
+          <span><strong>The Library</strong><small>Browse every preserved work by form and feeling.</small></span>
+          <span class="archive-path-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="archive-path" href="#writers">
+          <span class="archive-path-number">02</span>
+          <span><strong>Two Voices</strong><small>Enter each writer's room and follow her work.</small></span>
+          <span class="archive-path-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="archive-path" href="#fragments">
+          <span class="archive-path-number">03</span>
+          <span><strong>Fragments</strong><small>Find the thoughts that have not finished becoming.</small></span>
+          <span class="archive-path-arrow" aria-hidden="true">↗</span>
+        </a>
+      </nav>
+    </section>
+
     <section id="library" class="section page-section">
       <div class="section-heading wide-heading">
         <div>
@@ -126,7 +151,10 @@
 
   <section id="reader" class="reader-view" aria-hidden="true">
     <div class="reader-shell">
-      <button class="reader-back" type="button" data-close-reader>← Back</button>
+      <div class="reader-toolbar">
+        <button class="reader-back" type="button" data-close-reader>← Back</button>
+        <button class="reader-share" type="button" data-share-reader aria-label="Share this piece" hidden>Share</button>
+      </div>
       <p id="readerMeta" class="reader-meta"></p>
       <h1 id="readerTitle"></h1>
       <div id="readerPageSurface" class="reader-page-surface">
@@ -138,6 +166,21 @@
         <button class="reader-page-button" type="button" data-reader-next>Next →</button>
       </nav>
       <div id="readerAuthor" class="reader-note"></div>
+    </div>
+  </section>
+
+  <section id="shareDialog" class="share-dialog" aria-hidden="true" aria-labelledby="shareDialogTitle">
+    <div class="share-dialog-panel" role="dialog" aria-modal="true">
+      <button class="share-dialog-close" type="button" data-close-share aria-label="Close share dialog">×</button>
+      <p class="eyebrow">A small invitation</p>
+      <h2 id="shareDialogTitle">Share this piece</h2>
+      <div id="sharePreview" class="share-preview"></div>
+      <p id="shareStatus" class="share-status" aria-live="polite"></p>
+      <div class="share-actions">
+        <button class="button primary" type="button" data-share-native>Share preview</button>
+        <button class="button secondary" type="button" data-share-download>Download image</button>
+        <button class="button secondary" type="button" data-share-copy>Copy link</button>
+      </div>
     </div>
   </section>
 
