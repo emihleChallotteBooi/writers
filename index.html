@@ -12,11 +12,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="./ui/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./ui/styles.css" />
 </head>
 <body>
-  <div class="screen-grain" aria-hidden="true"></div>
+  <aside class="screen-grain" aria-hidden="true"></aside>
 
   <header class="site-header">
     <a class="brand" href="#home" aria-label="Writers home">Writers</a>
@@ -29,40 +29,41 @@
       <a href="#about">About</a>
       <button class="theme-toggle" type="button" aria-pressed="false">Dark Mode</button>
       <button class="sound-toggle" type="button" aria-pressed="false">Reading Room: Off</button>
+      <button id="adminButton" class="admin-toggle" type="button" aria-label="Writer admin panel" title="Admin Panel">⚙️ Admin</button>
     </nav>
   </header>
 
   <main id="app">
     <section id="home" class="hero section page-section">
       <p class="eyebrow">A two-writer literary archive</p>
-      <h1><span>Subconscious</span> Prints</h1>
-      <div class="orange-rule" aria-hidden="true"></div>
+      <h1><em>Subconscious</em> Prints</h1>
+      <hr class="orange-rule" aria-hidden="true">
       <p class="hero-copy">Two writers. One quiet archive of thoughts, stories, fragments, and things left unsaid.</p>
-      <div class="hero-actions">
+      <nav class="hero-actions" aria-label="Hero actions">
         <a class="button primary" href="#library" data-sound="page">Start Reading</a>
         <a class="button secondary" href="#writers" data-sound="paper">Meet the Writers</a>
-      </div>
+      </nav>
     </section>
 
     <section class="section narrow page-section" data-page="home-library-preview">
-      <div class="section-heading">
+      <header class="section-heading">
         <p class="eyebrow">Recently preserved</p>
         <h2>Latest from the archive</h2>
         <p>The three newest pieces from both writers, ordered by the date preserved in each Markdown file.</p>
-      </div>
-      <div id="featuredPosts" class="post-grid"></div>
+      </header>
+      <section id="featuredPosts" class="post-grid"></section>
     </section>
 
     <section id="library" class="section page-section">
-      <div class="section-heading wide-heading">
-        <div>
+      <header class="section-heading wide-heading">
+        <section>
           <p class="eyebrow">Library</p>
           <h2>Browse the archive</h2>
-        </div>
+        </section>
         <p class="section-note">A shared index for both writers. Filter by author, form, or feeling without losing the quiet reading experience.</p>
-      </div>
+      </header>
 
-      <div class="filters" aria-label="Library filters">
+      <form class="filters" aria-label="Library filters">
         <label>
           Writer
           <select id="authorFilter">
@@ -81,31 +82,31 @@
             <option value="all">All moods</option>
           </select>
         </label>
-      </div>
+      </form>
 
-      <div id="libraryPosts" class="post-list"></div>
+      <section id="libraryPosts" class="post-list"></section>
     </section>
 
     <section id="writers" class="section warm-panel page-section">
-      <div class="section-heading centered">
+      <header class="section-heading centered">
         <p class="eyebrow">Meet the authors</p>
         <h2>Two voices, one archive</h2>
         <p>The archive belongs to both writers equally. Each author has a dedicated room for her own work.</p>
-      </div>
-      <div class="writer-grid" id="writerCards"></div>
+      </header>
+      <section class="writer-grid" id="writerCards"></section>
     </section>
 
     <section id="writerProfile" class="section writer-profile page-section" aria-live="polite" hidden>
-      <div id="writerProfileContent"></div>
+      <article id="writerProfileContent"></article>
     </section>
 
     <section id="fragments" class="section page-section">
-      <div class="section-heading">
+      <header class="section-heading">
         <p class="eyebrow">Fragments</p>
         <h2>Incomplete thoughts</h2>
 
-      </div>
-      <div id="fragmentGrid" class="fragment-grid"></div>
+      </header>
+      <section id="fragmentGrid" class="fragment-grid"></section>
     </section>
 
     <section id="about" class="section narrow about-section page-section">
@@ -125,20 +126,20 @@
   </main>
 
   <section id="reader" class="reader-view" aria-hidden="true">
-    <div class="reader-shell">
+    <article class="reader-shell">
       <button class="reader-back" type="button" data-close-reader>← Back</button>
       <p id="readerMeta" class="reader-meta"></p>
       <h1 id="readerTitle"></h1>
-      <div id="readerPageSurface" class="reader-page-surface">
-        <div id="readerBody" class="reader-body"></div>
-      </div>
+      <section id="readerPageSurface" class="reader-page-surface">
+        <article id="readerBody" class="reader-body"></article>
+      </section>
       <nav id="readerPagination" class="reader-pagination" aria-label="Reading pages" hidden>
         <button class="reader-page-button" type="button" data-reader-prev>← Previous</button>
-        <span id="readerPageStatus" class="reader-page-status">Page 1 of 1</span>
+        <output id="readerPageStatus" class="reader-page-status">Page 1 of 1</output>
         <button class="reader-page-button" type="button" data-reader-next>Next →</button>
       </nav>
-      <div id="readerAuthor" class="reader-note"></div>
-    </div>
+      <footer id="readerAuthor" class="reader-note"></footer>
+    </article>
   </section>
 
   <footer class="site-footer">
@@ -156,6 +157,242 @@
     <p class="small">© 2026 Writers. All pieces remain with their authors.</p>
   </footer>
 
-  <script src="./script.js"></script>
+  <!-- Writer Admin Panel -->
+  <aside id="adminPanel" class="admin-panel" aria-label="Writer admin panel">
+    <header class="admin-panel-header">
+      <h2>Writer Admin</h2>
+      <section class="admin-header-controls">
+        <output id="cloudSyncStatus" class="sync-status" title="Cloud sync status">○ Local</output>
+        <button id="adminCloseBtn" type="button" aria-label="Close admin panel">✕</button>
+      </section>
+    </header>
+
+    <output id="adminMessage" class="admin-message" hidden></output>
+
+    <nav class="admin-tabs" aria-label="Admin tabs">
+      <button id="composeTabBtn" class="admin-tab-btn is-active" type="button">✏️ Compose</button>
+      <button id="uploadTabBtn" class="admin-tab-btn" type="button">📤 Upload</button>
+      <button id="manageTabBtn" class="admin-tab-btn" type="button">📋 Manage</button>
+      <button id="settingsTabBtn" class="admin-tab-btn" type="button">⚙️ Settings</button>
+    </nav>
+
+    <!-- Compose Tab -->
+    <section id="composeTab" class="admin-tab-content">
+      <form id="composeForm">
+        <fieldset>
+          <legend>Select Writer</legend>
+          <select id="composeWriterSelect" required>
+            <option value="">-- Choose a writer --</option>
+            <option value="challotte">Challotte</option>
+            <option value="sister">Inathi Booi</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Work Details</legend>
+          <label>
+            Title
+            <input type="text" id="composeTitleInput" placeholder="Give your piece a title" required>
+          </label>
+          <label>
+            Type
+            <select id="composeTypeSelect">
+              <option>Fragment</option>
+              <option>Poem</option>
+              <option>Thought</option>
+              <option>Reflection</option>
+              <option>Letter</option>
+              <option>Essay</option>
+              <option>Story</option>
+              <option>Book</option>
+            </select>
+          </label>
+          <label>
+            Date
+            <input type="date" id="composeDateInput" required>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Mood Tags</legend>
+          <section id="composeMoodCheckboxes" class="checkboxes">
+            <label class="checkbox-label"><input type="checkbox" name="composeMood" value="Unspoken"> Unspoken</label>
+            <label class="checkbox-label"><input type="checkbox" name="composeMood" value="Memory"> Memory</label>
+            <label class="checkbox-label"><input type="checkbox" name="composeMood" value="Softness"> Softness</label>
+            <label class="checkbox-label"><input type="checkbox" name="composeMood" value="Hope"> Hope</label>
+          </section>
+        </fieldset>
+
+        <fieldset>
+          <legend>Your Work</legend>
+          <label>
+            Write your piece here
+            <textarea id="composeContentTextarea" placeholder="Start writing... Your words will be preserved here." rows="12" required></textarea>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Excerpt (optional)</legend>
+          <label>
+            Preview Text
+            <textarea id="composeExcerptInput" placeholder="Brief preview or leave blank for auto-generated" rows="2"></textarea>
+          </label>
+        </fieldset>
+
+        <section class="admin-actions">
+          <button type="submit" class="btn btn-primary">💾 Save to Archive</button>
+          <button type="reset" class="btn btn-secondary">Clear</button>
+        </section>
+      </form>
+    </section>
+
+    <!-- Upload Tab -->
+    <section id="uploadTab" class="admin-tab-content">
+      <form id="adminUploadForm">
+        <fieldset>
+          <legend>Select Writer</legend>
+          <select id="writerSelect" required>
+            <option value="">-- Choose a writer --</option>
+            <option value="challotte">Challotte</option>
+            <option value="sister">Inathi Booi</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Upload File</legend>
+          <p class="help-text">Accepted formats: PDF, Markdown (.md), or plain text</p>
+          <section class="file-input-wrapper">
+            <input type="file" id="uploadFile" accept=".pdf,.md,.txt,application/pdf,text/markdown,text/plain" required>
+            <output id="fileName">No file selected</output>
+          </section>
+        </fieldset>
+
+        <fieldset>
+          <legend>Content Details</legend>
+          <label>
+            Title
+            <input type="text" id="contentTitle" placeholder="Piece title" required>
+          </label>
+          <label>
+            Type
+            <select id="contentType">
+              <option>Fragment</option>
+              <option>Poem</option>
+              <option>Thought</option>
+              <option>Reflection</option>
+              <option>Letter</option>
+              <option>Essay</option>
+              <option>Story</option>
+              <option>Book</option>
+            </select>
+          </label>
+          <label>
+            Date
+            <input type="date" id="contentDate" required>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Mood Tags</legend>
+          <section id="moodCheckboxes" class="checkboxes">
+            <label class="checkbox-label"><input type="checkbox" name="mood" value="Unspoken"> Unspoken</label>
+            <label class="checkbox-label"><input type="checkbox" name="mood" value="Memory"> Memory</label>
+            <label class="checkbox-label"><input type="checkbox" name="mood" value="Softness"> Softness</label>
+            <label class="checkbox-label"><input type="checkbox" name="mood" value="Hope"> Hope</label>
+          </section>
+        </fieldset>
+
+        <fieldset>
+          <legend>Excerpt (optional)</legend>
+          <label>
+            Preview Text
+            <textarea id="contentExcerpt" placeholder="Brief preview or leave blank for auto-generated" rows="3"></textarea>
+          </label>
+        </fieldset>
+
+        <section class="admin-actions">
+          <button type="submit" class="btn btn-primary">Upload & Save</button>
+        </section>
+      </form>
+
+      <section class="admin-section">
+        <h3>Import Existing Content</h3>
+        <p>Sync all pieces from the server archive to local storage.</p>
+        <button id="syncExistingBtn" type="button" class="btn btn-secondary">Sync Server Archive</button>
+      </section>
+    </section>
+
+    <!-- Cloud Sync Settings Tab -->
+    <section id="settingsTab" class="admin-tab-content" hidden>
+      <section class="admin-section">
+        <h3>Cloud Backup</h3>
+        <p>Automatically backup your work to the cloud. Local changes are saved immediately, then synced in the background.</p>
+        
+        <fieldset>
+          <legend>Sync Settings</legend>
+          <label class="checkbox-label">
+            <input type="checkbox" id="enableCloudSync" checked>
+            Enable Cloud Sync (requires Firebase configuration)
+          </label>
+        </fieldset>
+
+        <section class="sync-info">
+          <section id="syncStats" class="sync-stats">
+            <p class="stat-row"><strong>Total pieces:</strong> <output id="totalPieces">0</output></p>
+            <p class="stat-row"><strong>Synced:</strong> <output id="syncedPieces">0</output></p>
+            <p class="stat-row"><strong>Pending:</strong> <output id="pendingPieces">0</output></p>
+            <p class="stat-row"><strong>Status:</strong> <output id="syncStatusDetail">Offline</output></p>
+            <p class="stat-row"><strong>Last sync:</strong> <output id="lastSyncTime">Never</output></p>
+          </section>
+        </section>
+
+        <section class="admin-actions">
+          <button id="syncNowBtn" type="button" class="btn btn-primary">Sync Now</button>
+          <button id="pullFromCloudBtn" type="button" class="btn btn-secondary">Pull from Cloud</button>
+        </section>
+      </section>
+
+      <section class="admin-section">
+        <h3>Sync Status</h3>
+        <section id="syncDetails" class="sync-details"></section>
+      </section>
+    </section>
+
+    <!-- Manage Tab -->
+    <section id="manageTab" class="admin-tab-content" hidden>
+      <section class="admin-section">
+        <header class="manage-header">
+          <h3>Stored Content</h3>
+          <p class="help-text">Total pieces: <output id="contentCount">0</output></p>
+        </header>
+        <section id="contentList" class="content-list"></section>
+      </section>
+    </section>
+  </aside>
+
+  <!-- PDF.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- Local Storage -->
+  <script src="./ui/storage/storage.js"></script>
+  <script src="./ui/converters/pdf-converter.js"></script>
+  <script src="./ui/api/cloud-sync.js"></script>
+
+  <!-- Split application files -->
+  <script src="./ui/core/app-core.js"></script>
+  <script src="./ui/content/content-format.js"></script>
+  <script src="./ui/api/archive-api.js"></script>
+  <script src="./ui/render/rendering.js"></script>
+  <script src="./ui/reader/reader.js"></script>
+  <script src="./ui/audio/audio.js"></script>
+
+  <!-- Admin and app bootstrap -->
+  <script src="./ui/admin/admin-panel.js"></script>
+  <script src="./ui/admin/admin-compose.js"></script>
+  <script src="./ui/admin/admin-upload.js"></script>
+  <script src="./ui/admin/admin-manage.js"></script>
+  <script src="./ui/admin/admin-settings.js"></script>
+  <script src="./ui/admin/admin-bootstrap.js"></script>
+  <script src="./ui/app/app-init.js"></script>
 </body>
 </html>
