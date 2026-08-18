@@ -4,12 +4,9 @@
  */
 
 // SHA-256 hash of the admin passphrase. The plaintext passphrase is never
-// stored in source. Replace this with your own hash — see ADMIN-ACCESS.md
-// for a one-line command to generate it. Default hash below corresponds to
-// the placeholder passphrase "change-me-now" — you MUST change this before
-// deploying, or the admin panel is unprotected.
+// stored in source. See ADMIN-ACCESS.md for instructions to rotate it.
 const ADMIN_PASSPHRASE_HASH =
-  "ccc0b903bce51fb554262d742d0a282e1f8a87d064f1cf44f8ff5148ca4beb42"; // placeholder passphrase: "change-me-now" — replace me
+  "fd43461367ef6e0c7d246221a6cbf9a745c3bc2372003854de723ee6a7b655bd";
 
 async function sha256Hex(text) {
   const data = new TextEncoder().encode(text);

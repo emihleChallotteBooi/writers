@@ -6,8 +6,8 @@ sharing the site publicly.
 ## 1. Admin panel passphrase
 
 The "⚙️ Admin" button now prompts for a passphrase before opening the panel.
-The placeholder passphrase is `change-me-now` — **change it** before
-deploying.
+The passphrase is stored only as a SHA-256 hash in the client code. Rotate it
+before sharing the site publicly if it has been exposed.
 
 To set your own:
 
