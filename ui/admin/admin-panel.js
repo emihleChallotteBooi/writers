@@ -26,7 +26,7 @@ class WriterAdminPanel {
   async requestAccess() {
     if (this.unlocked) return true;
 
-    const attempt = window.prompt("Enter the admin passphrase:");
+    const attempt = await this.requestPassphrase();
     if (attempt === null) return false;
 
     const hash = await sha256Hex(attempt);
@@ -36,10 +36,80 @@ class WriterAdminPanel {
       return true;
     }
 
-    // The panel itself is hidden until unlocked, so showMessage() (which
-    // writes into a child of the panel) isn't visible yet — use alert().
-    window.alert("Incorrect passphrase.");
+    this.showAccessError();
     return false;
+  }
+
+  requestPassphrase() {
+    return new Promise(resolve => {
+      const prompt = document.createElement("div");
+      prompt.className = "admin-access-alert";
+      prompt.setAttribute("role", "dialog");
+      prompt.setAttribute("aria-modal", "true");
+      prompt.setAttribute("aria-labelledby", "adminAccessPromptTitle");
+      prompt.innerHTML = `
+        <form class="admin-access-alert__panel">
+          <p id="adminAccessPromptTitle" class="admin-access-alert__title">Writer access</p>
+          <label class="admin-access-alert__label" for="adminAccessPassphrase">Enter the admin passphrase</label>
+          <input id="adminAccessPassphrase" class="admin-access-alert__input" type="password" autocomplete="current-password" required>
+          <div class="admin-access-alert__actions">
+            <button class="button secondary admin-access-alert__cancel" type="button">Cancel</button>
+            <button class="button primary" type="submit">Continue</button>
+          </div>
+        </form>
+      `;
+
+      const finish = value => {
+        prompt.remove();
+        document.removeEventListener("keydown", handleKeydown);
+        resolve(value);
+      };
+      const handleKeydown = event => {
+        if (event.key === "Escape") finish(null);
+      };
+
+      prompt.addEventListener("submit", event => {
+        event.preventDefault();
+        finish(prompt.querySelector(".admin-access-alert__input").value);
+      });
+      prompt.querySelector(".admin-access-alert__cancel").addEventListener("click", () => finish(null));
+      document.addEventListener("keydown", handleKeydown);
+      document.body.appendChild(prompt);
+      prompt.querySelector(".admin-access-alert__input").focus();
+    });
+  }
+
+  showAccessError() {
+    const existingAlert = document.getElementById("adminAccessAlert");
+    if (existingAlert) existingAlert.remove();
+
+    const alert = document.createElement("div");
+    alert.id = "adminAccessAlert";
+    alert.className = "admin-access-alert";
+    alert.setAttribute("role", "alertdialog");
+    alert.setAttribute("aria-modal", "true");
+    alert.setAttribute("aria-labelledby", "adminAccessAlertTitle");
+
+    alert.innerHTML = `
+      <div class="admin-access-alert__panel">
+        <p id="adminAccessAlertTitle" class="admin-access-alert__title">Access not granted</p>
+        <p class="admin-access-alert__text">That passphrase was not recognised.</p>
+        <button class="button primary admin-access-alert__close" type="button">Try again</button>
+      </div>
+    `;
+
+    const closeAlert = () => {
+      alert.remove();
+      document.removeEventListener("keydown", handleKeydown);
+    };
+    const handleKeydown = event => {
+      if (event.key === "Escape") closeAlert();
+    };
+
+    alert.querySelector(".admin-access-alert__close").addEventListener("click", closeAlert);
+    document.addEventListener("keydown", handleKeydown);
+    document.body.appendChild(alert);
+    alert.querySelector(".admin-access-alert__close").focus();
   }
 
   init() {
