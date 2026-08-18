@@ -3,10 +3,43 @@
  * Shared panel lifecycle, common utilities, and event wiring.
  */
 
+// SHA-256 hash of the admin passphrase. The plaintext passphrase is never
+// stored in source. See ADMIN-ACCESS.md for instructions to rotate it.
+const ADMIN_PASSPHRASE_HASH =
+  "fd43461367ef6e0c7d246221a6cbf9a745c3bc2372003854de723ee6a7b655bd";
+
+async function sha256Hex(text) {
+  const data = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 class WriterAdminPanel {
   constructor() {
     this.currentWriter = null;
     this.isOpen = false;
+    this.unlocked = sessionStorage.getItem("adminUnlocked") === "true";
+  }
+
+  async requestAccess() {
+    if (this.unlocked) return true;
+
+    const attempt = window.prompt("Enter the admin passphrase:");
+    if (attempt === null) return false;
+
+    const hash = await sha256Hex(attempt);
+    if (hash === ADMIN_PASSPHRASE_HASH) {
+      this.unlocked = true;
+      sessionStorage.setItem("adminUnlocked", "true");
+      return true;
+    }
+
+    // The panel itself is hidden until unlocked, so showMessage() (which
+    // writes into a child of the panel) isn't visible yet — use alert().
+    window.alert("Incorrect passphrase.");
+    return false;
   }
 
   init() {
@@ -90,9 +123,13 @@ class WriterAdminPanel {
     if (composeDateInput) composeDateInput.value = today;
   }
 
-  openPanel() {
+  async openPanel() {
     const panel = document.getElementById("adminPanel");
     if (!panel) return;
+
+    const allowed = await this.requestAccess();
+    if (!allowed) return;
+
     panel.classList.add("is-open");
     this.isOpen = true;
     this.loadExistingContent();

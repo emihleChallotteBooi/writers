@@ -28,7 +28,6 @@ class CloudSync {
     }
 
     try {
-    constructor() {
       this.db = firebase.firestore();
       this.isInitialized = true;
 
@@ -74,7 +73,6 @@ class CloudSync {
    */
   async performSync() {
     if (!this.isInitialized || this.isSyncing || !this.isOnline) return;
-    /**
 
     this.isSyncing = true;
     this.updateSyncStatus('syncing');
